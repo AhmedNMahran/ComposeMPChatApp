@@ -22,12 +22,16 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
+            export(libs.androidx.lifecycle.viewmodel)
             baseName = "shared"
             isStatic = true
         }
     }
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
         commonMain.dependencies {
             //put your multiplatform dependencies here
             implementation(compose.runtime)
@@ -40,6 +44,15 @@ kotlin {
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            //session 12
+            implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.client.auth)
+
+
+
+            // ViewModel utilities for Compose
+            implementation (libs.androidx.lifecycle.viewmodel)
+
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
