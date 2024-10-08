@@ -47,7 +47,7 @@ kotlin {
             //session 12
             implementation(libs.ktor.client.websockets)
             implementation(libs.ktor.client.auth)
-
+            implementation(compose.components.resources)
 
 
             // ViewModel utilities for Compose
@@ -77,4 +77,5 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 }
