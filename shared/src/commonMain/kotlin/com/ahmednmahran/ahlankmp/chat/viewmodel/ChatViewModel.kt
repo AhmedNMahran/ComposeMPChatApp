@@ -18,19 +18,22 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     // Expose user state from the repository
     val user: StateFlow<User> = chatRepository.user
+    val connections: StateFlow<List<User>> = chatRepository.users
 
     init {
-
         connect()
-        viewModelScope.launch {
-
-        }
     }
 
     // Function to send messages
     fun sendMessage(message: String) {
         viewModelScope.launch {
             chatRepository.send(message)
+        }
+    }
+
+    fun getUsers(){
+        viewModelScope.launch {
+            chatRepository.getUsers()
         }
     }
 
@@ -44,6 +47,6 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
     // Clean up any resources when ViewModel is cleared
     override fun onCleared() {
         super.onCleared()
-        // Optionally handle any cleanup here if needed
+        chatRepository.disconnect() // Close the chat
     }
 }

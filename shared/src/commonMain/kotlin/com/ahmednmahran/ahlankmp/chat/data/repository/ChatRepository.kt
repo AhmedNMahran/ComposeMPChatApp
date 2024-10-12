@@ -6,7 +6,12 @@ import com.ahmednmahran.ahlankmp.baseHost
 import com.ahmednmahran.ahlankmp.chat.data.model.ChatMessage
 import com.ahmednmahran.ahlankmp.chat.data.model.User
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.plugins.websocket.*
+import io.ktor.client.request.get
+import io.ktor.client.request.host
+import io.ktor.client.request.port
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
@@ -28,8 +33,10 @@ class ChatRepository(private val chatUser: User) {
     private var _alert = MutableStateFlow("")
     val alert: StateFlow<String> = _alert
 
-    private var _user = MutableStateFlow(User("","",""))
+    private var _user = MutableStateFlow(User("", "", ""))
     val user = _user
+    private var _users = MutableStateFlow(emptyList<User>())
+    val users: StateFlow<List<User>> = _users
 
     private val _job by lazy {
         CoroutineScope(Dispatchers.Default).launch {
@@ -88,13 +95,25 @@ class ChatRepository(private val chatUser: User) {
 
     private suspend fun extractChatMessage(it: String) {
         println("extract: $it")
-        try{
+        try {
             val newMessage = Json.decodeFromString<ChatMessage>(it)
             _chatMessages.emit(_chatMessages.value + newMessage)
             _alert.emit("")
-        }catch (th: Throwable){
+        } catch (th: Throwable) {
             _alert.emit(th.message ?: "there was an error.")
         }
+    }
+
+    suspend fun getUsers() {
+        val users: List<User> = Json.decodeFromString(client.get("connected-users") {
+            host = baseHost
+            port = 8080
+        }.bodyAsText())?: emptyList()
+        _users.emit(users)
+    }
+
+    fun disconnect() {
+        _job.cancel()
     }
 
 

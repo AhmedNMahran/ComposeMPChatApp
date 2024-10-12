@@ -21,6 +21,13 @@ class LoginViewModel(private val repository: LoginRepository) : ViewModel() {
         data class Error(val message: String) : LoginUIState()
     }
 
+    init {
+        repository.run {
+            if(isLoggedIn())
+                this@LoginViewModel.login(user.username, user.password)
+        }
+    }
+
     fun login(username: String, password: String) = viewModelScope.launch {
         val result = repository.login(username, password)
         _loginState.update {

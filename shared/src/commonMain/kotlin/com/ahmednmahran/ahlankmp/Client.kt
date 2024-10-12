@@ -10,7 +10,7 @@ import io.ktor.serialization.kotlinx.json.*
 
 object Client {
     private var client: HttpClient? = null
-
+    lateinit var loggedUser: User
     fun initialize(chatUser: User) {
         if (client == null) {
             client = HttpClient {
@@ -19,12 +19,6 @@ object Client {
                 }
                 install(Auth) {
                     basic {
-                        credentials {
-                            BasicAuthCredentials(
-                                username = chatUser.username,
-                                password = chatUser.password
-                            )
-                        }
                         realm = "Access to the '/' path"
                     }
                 }

@@ -68,13 +68,17 @@ private fun LoginScreenContent(message: String = "", onLoginClick: (String, Stri
                     Text(text = message, color = MaterialTheme.colorScheme.error)
                 }
                 Text("Welcome To Chat App")
-                var username: String by remember { mutableStateOf("username") }
-                var password: String by remember { mutableStateOf("password") }
-                TextField(username, {
+                var username: String by remember { mutableStateOf("") }
+                var password: String by remember { mutableStateOf("") }
+                TextField(
+                    value = username,
+                    label = { Text("Username") },
+                    onValueChange = {
                     username = it
                 })
                 TextField(
                     value = password,
+                    label = { Text("Password") },
                     onValueChange = {
                         password = it
                     },
