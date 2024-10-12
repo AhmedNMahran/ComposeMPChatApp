@@ -8,21 +8,37 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.serialization.kotlinx.json.*
 
-fun client(chatUser: User): HttpClient =
-    HttpClient {
-        install(ContentNegotiation){
-            json()
-        }
-        install(Auth) {
-            basic {
-                credentials {
-                    BasicAuthCredentials(
-                        username = chatUser.username,
-                        password = chatUser.password
-                    )
+object Client {
+    private var client: HttpClient? = null
+
+    fun initialize(chatUser: User) {
+        if (client == null) {
+            client = HttpClient {
+                install(ContentNegotiation) {
+                    json()
                 }
-                realm = "Access to the '/' path"
+                install(Auth) {
+                    basic {
+                        credentials {
+                            BasicAuthCredentials(
+                                username = chatUser.username,
+                                password = chatUser.password
+                            )
+                        }
+                        realm = "Access to the '/' path"
+                    }
+                }
+                install(WebSockets)
             }
         }
-        install(WebSockets)
     }
+
+    fun getInstance(): HttpClient {
+        return client ?: throw IllegalStateException("HttpClient is not initialized. Call initialize() first.")
+    }
+
+    fun clear() {
+        client?.close()
+        client = null
+    }
+}

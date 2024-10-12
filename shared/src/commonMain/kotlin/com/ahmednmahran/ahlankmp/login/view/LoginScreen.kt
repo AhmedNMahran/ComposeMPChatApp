@@ -1,10 +1,7 @@
 package com.ahmednmahran.ahlankmp.login.view
 
-import ahlankmp.shared.generated.resources.Res
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -13,34 +10,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType.Companion.Password
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import com.ahmednmahran.ahlankmp.chat.view.ChatScreen
+import com.ahmednmahran.ahlankmp.login.data.repository.LoginRepository
 import com.ahmednmahran.ahlankmp.login.viewmodel.LoginViewModel
-import org.jetbrains.compose.resources.DrawableResource
+import com.ahmednmahran.ahlankmp.view.Loading
 import org.jetbrains.compose.resources.InternalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
+
+class LoginScreen : Screen {
+    @Composable
+    override fun Content() {
+        LoginScreen(LoginViewModel(LoginRepository()))
+    }
+
+}
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, onLoggedIn: () -> Unit) {
-    LoginScreenContent(){
-        viewModel.login()
+private fun LoginScreen(viewModel: LoginViewModel) {
+    val loginState = viewModel.loginState.collectAsState()
+    when (val uiState = loginState.value) {
+        is LoginViewModel.LoginUIState.Idle -> {
+            LoginScreenContent(onLoginClick = viewModel::login)
+        }
+        is LoginViewModel.LoginUIState.Error -> {
+            LoginScreenContent(uiState.message, viewModel::login)
+        }
 
-        // TODO (4): collect the login state using collectAsState()
-        // if success, call onLoggedIn
-        // else show error
-        onLoggedIn()
+        LoginViewModel.LoginUIState.Loading -> {
+            Loading()
+        }
+
+        is LoginViewModel.LoginUIState.Success -> {
+            LocalNavigator.current?.push(ChatScreen(uiState.user))
+        }
     }
 
 }
 
 
-@Composable
-fun Error(){
-// TODO (5): show simple error
-}
+
 
 @OptIn(InternalResourceApi::class)
 @Composable
-fun LoginScreenContent(onLoginClick: () -> Unit = {}) {
+private fun LoginScreenContent(message: String = "", onLoginClick: (String, String) -> Unit = { _, _ -> }) {
 
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
 
@@ -50,6 +64,9 @@ fun LoginScreenContent(onLoginClick: () -> Unit = {}) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {
+                if (message.isNotBlank()) {
+                    Text(text = message, color = MaterialTheme.colorScheme.error)
+                }
                 Text("Welcome To Chat App")
                 var username: String by remember { mutableStateOf("username") }
                 var password: String by remember { mutableStateOf("password") }
@@ -65,14 +82,13 @@ fun LoginScreenContent(onLoginClick: () -> Unit = {}) {
                     keyboardOptions = KeyboardOptions(keyboardType = Password),
                 )
 
-                Button(onClick = onLoginClick) {
+                Button(onClick = { onLoginClick(username, password) }) {
                     Text("Login")
                 }
 
             }
         }
     }
-
 
 
 }

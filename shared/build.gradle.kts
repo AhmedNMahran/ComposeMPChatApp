@@ -48,6 +48,8 @@ kotlin {
             implementation(libs.ktor.client.websockets)
             implementation(libs.ktor.client.auth)
             implementation(compose.components.resources)
+            //Navigation
+            implementation(libs.voyager.navigator)
 
 
             // ViewModel utilities for Compose
@@ -59,6 +61,7 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            api(libs.androidx.lifecycle.viewmodel)
         }
 
         commonTest.dependencies {

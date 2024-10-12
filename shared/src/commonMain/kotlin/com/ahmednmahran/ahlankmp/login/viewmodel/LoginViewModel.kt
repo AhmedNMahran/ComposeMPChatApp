@@ -6,24 +6,40 @@ import com.ahmednmahran.ahlankmp.chat.data.model.User
 import com.ahmednmahran.ahlankmp.login.data.repository.LoginRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository: LoginRepository): ViewModel() {
+class LoginViewModel(private val repository: LoginRepository) : ViewModel() {
 
-    private val _loginState: StateFlow<LoginUIState> = MutableStateFlow(LoginUIState.Loading)
+    private val _loginState: MutableStateFlow<LoginUIState> = MutableStateFlow(LoginUIState.Idle)
     val loginState: StateFlow<LoginUIState> = _loginState
 
     sealed class LoginUIState {
-        object Loading : LoginUIState()
-        data class Success(val user: User,) : LoginUIState()
-        object Error : LoginUIState()
+        data object Idle : LoginUIState()
+        data object Loading : LoginUIState()
+        data class Success(val user: User) : LoginUIState()
+        data class Error(val message: String) : LoginUIState()
     }
 
-    fun login() = viewModelScope.launch {
-        repository.login()
-        // TODO (1): make login() return flow
-        // TODO (2): collect the flow
-        // TODO (3): update the state based on the flow value
+    fun login(username: String, password: String) = viewModelScope.launch {
+        val result = repository.login(username, password)
+        _loginState.update {
+            when {
+                result.isSuccess -> {
+                    result.getOrNull()?.let { user ->
+                        LoginUIState.Success(user)
+                    } ?: error(result)
+                }
+
+                else -> {
+                    error(result)
+                }
+            }
+
+        }
     }
+
+    private fun error(result: Result<User>) =
+        LoginUIState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
 
 }

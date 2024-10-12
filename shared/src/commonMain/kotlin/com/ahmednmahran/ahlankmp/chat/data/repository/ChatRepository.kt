@@ -1,14 +1,12 @@
 package com.ahmednmahran.ahlankmp.chat.data.repository
 
 
+import com.ahmednmahran.ahlankmp.Client
+import com.ahmednmahran.ahlankmp.baseHost
 import com.ahmednmahran.ahlankmp.chat.data.model.ChatMessage
 import com.ahmednmahran.ahlankmp.chat.data.model.User
 import io.ktor.client.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.websocket.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
@@ -18,21 +16,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class ChatRepository(private val chatUser: User, private val host: String = "127.0.0.1"
-) {
+class ChatRepository(private val chatUser: User) {
     private val client: HttpClient by lazy {
-        HttpClient {
-            install(Auth){
-                basic {
-                    credentials {
-                        BasicAuthCredentials(
-                            username = chatUser.username,
-                            password = chatUser.password
-                        )
-                    }
-                    realm = "Access to the '/' path"
-                }
-            }
+        Client.getInstance().config {
             install(WebSockets)
         }
     }
@@ -47,11 +33,6 @@ class ChatRepository(private val chatUser: User, private val host: String = "127
 
     private val _job by lazy {
         CoroutineScope(Dispatchers.Default).launch {
-            val response: HttpResponse = client.post("login") {
-                host = this@ChatRepository.host
-                port = 8080
-            }
-            println(response.bodyAsText())
             connect()
             startChat()
         }
@@ -67,7 +48,7 @@ class ChatRepository(private val chatUser: User, private val host: String = "127
     suspend fun connect() {
         _session = client.webSocketSession(
             method = HttpMethod.Get,
-            host = host,
+            host = baseHost,
             port = 8080,
             path = "/chat"
         )

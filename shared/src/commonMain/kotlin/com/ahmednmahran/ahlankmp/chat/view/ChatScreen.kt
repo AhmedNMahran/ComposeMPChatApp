@@ -12,8 +12,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
+import cafe.adriel.voyager.core.screen.Screen
 import com.ahmednmahran.ahlankmp.chat.data.model.ChatMessage
 import com.ahmednmahran.ahlankmp.chat.data.model.User
+import com.ahmednmahran.ahlankmp.chat.data.repository.ChatRepository
+
+
+data class ChatScreen(val chatUser: User) : Screen {
+    @Composable
+    override fun Content() {
+        ChatScreen(ChatViewModel(ChatRepository(chatUser)))
+    }
+}
 
 @Composable
 fun ChatScreen(viewModel: ChatViewModel) {
