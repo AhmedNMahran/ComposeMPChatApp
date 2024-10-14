@@ -1,19 +1,26 @@
 package com.ahmednmahran.ahlankmp
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
-import com.ahmednmahran.ahlankmp.chat.data.model.User
-import com.ahmednmahran.ahlankmp.chat.data.repository.ChatRepository
+import coil3.compose.AsyncImage
 
 
-import com.ahmednmahran.ahlankmp.chat.view.ChatScreen
-import com.ahmednmahran.ahlankmp.chat.viewmodel.ChatViewModel
-import com.ahmednmahran.ahlankmp.login.data.repository.LoginRepository
 import com.ahmednmahran.ahlankmp.login.view.LoginScreen
-import com.ahmednmahran.ahlankmp.login.viewmodel.LoginViewModel
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -22,6 +29,32 @@ fun App() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        Navigator(LoginScreen())
+        Navigator(HomeScreen())
     }
+}
+
+
+class HomeScreen : Screen {
+    @Composable
+    override fun Content() {
+        HomeScreenContent()
+    }
+}
+
+@Composable
+fun HomeScreenContent(){
+    val navigator = LocalNavigator.current
+    Column {
+        AsyncImage(
+            modifier = Modifier.size(96.dp),
+            contentScale = ContentScale.Fit,
+            model = "https://media.istockphoto.com/id/1153425570/vector/quiz-or-exam-online-on-computer-screen-vector-illustration-flat-cartoon-laptop-with.jpg?s=2048x2048&w=is&k=20&c=ajY3h_KOwXNX3dlY1UKBmsiRsej5qZGbkI0xd7e0p74=",
+            contentDescription = null,
+        )
+        Text("Welcome to Chat App", style = MaterialTheme.typography.headlineLarge)
+    }
+//    LaunchedEffect(Unit){
+//        delay(2000)
+//        navigator?.push(LoginScreen())
+//    }
 }

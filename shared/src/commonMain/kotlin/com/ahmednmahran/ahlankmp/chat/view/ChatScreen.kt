@@ -9,12 +9,16 @@ import androidx.compose.ui.Modifier
 import com.ahmednmahran.ahlankmp.chat.viewmodel.ChatViewModel
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
+import coil3.compose.AsyncImage
 import com.ahmednmahran.ahlankmp.chat.data.model.ChatMessage
 import com.ahmednmahran.ahlankmp.chat.data.model.User
 import com.ahmednmahran.ahlankmp.chat.data.repository.ChatRepository
@@ -75,7 +79,7 @@ fun ChatScreenContent(
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(chatMessages.size) { index ->
                 val message = chatMessages[index]
-                Text(text = "${message.sender}: ${message.body}")
+                ChatItem(message, user)
             }
         }
 
@@ -94,5 +98,19 @@ fun ChatScreenContent(
                 Text(text = "Send")
             }
         }
+    }
+
+}
+@Composable
+fun ChatItem(message: ChatMessage, user: User) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = if (message.sender == user.username) Arrangement.End else Arrangement.Start
+    ) {
+        AsyncImage(
+            model = user.profileImageUrl,
+            contentDescription = null,
+            modifier = Modifier.size(48.dp).clip(CircleShape)
+        )
     }
 }

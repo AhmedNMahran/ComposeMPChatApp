@@ -54,6 +54,8 @@ kotlin {
 
             // ViewModel utilities for Compose
             implementation (libs.androidx.lifecycle.viewmodel)
+            implementation(libs.coil.compose)
+            implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0-rc01")
 
         }
         androidMain.dependencies {
