@@ -78,8 +78,8 @@ class ChatRepository(private val chatUser: User) {
         }
     }
 
-    suspend fun send(message: String) {
-        val messageObject = ChatMessage(body = message, sender = _user.value.username)
+    suspend fun send(message: String, to: String?) {
+        val messageObject = ChatMessage(body = message, sender = _user.value.username, to = to)
         _session?.send(Frame.Text(Json.encodeToString(messageObject)))
     }
 
@@ -105,11 +105,15 @@ class ChatRepository(private val chatUser: User) {
     }
 
     suspend fun getUsers() {
-        val users: List<User> = Json.decodeFromString(client.get("connected-users") {
-            host = baseHost
-            port = 8080
-        }.bodyAsText())?: emptyList()
-        _users.emit(users)
+        try{
+            val users: List<User> = Json.decodeFromString(client.get("connected-users") {
+                host = baseHost
+                port = 8080
+            }.bodyAsText()) ?: emptyList()
+            _users.emit(users)
+        }catch (t: Throwable){
+            _users.emit(emptyList())
+        }
     }
 
     fun disconnect() {

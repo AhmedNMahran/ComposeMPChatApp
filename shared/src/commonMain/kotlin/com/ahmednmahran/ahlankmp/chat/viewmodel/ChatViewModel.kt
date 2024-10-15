@@ -25,9 +25,9 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
     }
 
     // Function to send messages
-    fun sendMessage(message: String) {
+    fun sendMessage(message: String, to: String? = null) {
         viewModelScope.launch {
-            chatRepository.send(message)
+            chatRepository.send(message, to)
         }
     }
 

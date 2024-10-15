@@ -1,5 +1,6 @@
 package com.ahmednmahran.ahlankmp.chat.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
@@ -9,6 +10,8 @@ import androidx.compose.ui.Modifier
 import com.ahmednmahran.ahlankmp.chat.viewmodel.ChatViewModel
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import coil3.compose.AsyncImage
 import com.ahmednmahran.ahlankmp.chat.data.model.ChatMessage
 import com.ahmednmahran.ahlankmp.chat.data.model.User
@@ -28,7 +30,7 @@ import com.ahmednmahran.ahlankmp.connections.view.ConnectionsPage
 data class ChatScreen(val chatUser: User) : Screen {
     @Composable
     override fun Content() {
-        val viewModel by remember { mutableStateOf( ChatViewModel(ChatRepository(chatUser))) }
+        val viewModel by remember { mutableStateOf(ChatViewModel(ChatRepository(chatUser))) }
         ChatScreen(viewModel)
     }
 }
@@ -61,14 +63,24 @@ fun ChatScreenContent(
     onSendMessage: (String) -> Unit
 ) {
     val navigator = LocalNavigator.current
+
     Column(modifier = Modifier.fillMaxSize()) {
         // Display alert message if any
-        if (alertMessage.isNotEmpty()) {
-            Text(text = "Alert: $alertMessage", color = MaterialTheme.colorScheme.error)
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(connections) {
+                AsyncImage(
+                    modifier = Modifier.size(48.dp).clip(CircleShape)
+                        .clickable {
+                            navigator?.push(DirectChatScreen(user, it))
+                        },
+
+                    model = it.profileImageUrl, contentDescription = "connection profile image"
+                )
+            }
         }
         Button(onClick = {
             navigator?.push(ConnectionsPage(connections))
-        }){
+        }) {
             Text(text = "Direct Chats")
         }
 
@@ -79,7 +91,7 @@ fun ChatScreenContent(
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(chatMessages.size) { index ->
                 val message = chatMessages[index]
-                ChatItem(message, user)
+                ChatItem(message, user, user)
             }
         }
 
@@ -101,16 +113,30 @@ fun ChatScreenContent(
     }
 
 }
+
 @Composable
-fun ChatItem(message: ChatMessage, user: User) {
+fun ChatItem(message: ChatMessage, sender: User, currentUser: User) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = if (message.sender == user.username) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (message.sender == currentUser.username) Arrangement.End else Arrangement.Start
     ) {
+        if (message.sender == currentUser.username)
+            Spacer(modifier = Modifier.weight(1f))
         AsyncImage(
-            model = user.profileImageUrl,
+            model = sender.profileImageUrl,
             contentDescription = null,
             modifier = Modifier.size(48.dp).clip(CircleShape)
         )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = message.sender,
+                modifier = Modifier.wrapContentWidth(),
+                style = MaterialTheme.typography.labelMedium
+            )
+            Text(text = message.body, modifier = Modifier.wrapContentSize())
+        }
+        if (message.sender != currentUser.username)
+            Spacer(modifier = Modifier.weight(1f))
     }
+//    DataStoreFactory.
 }

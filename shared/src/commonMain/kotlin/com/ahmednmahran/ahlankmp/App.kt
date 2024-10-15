@@ -17,6 +17,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import coil3.compose.AsyncImage
+import com.ahmednmahran.ahlankmp.chat.view.ChatScreen
 
 
 import com.ahmednmahran.ahlankmp.login.view.LoginScreen
@@ -29,7 +30,7 @@ fun App() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        Navigator(HomeScreen())
+        Navigator(LoginScreen())
     }
 }
 
@@ -44,17 +45,21 @@ class HomeScreen : Screen {
 @Composable
 fun HomeScreenContent(){
     val navigator = LocalNavigator.current
-    Column {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         AsyncImage(
-            modifier = Modifier.size(96.dp),
+            modifier = Modifier.size(96.dp).clip(CircleShape),
             contentScale = ContentScale.Fit,
             model = "https://media.istockphoto.com/id/1153425570/vector/quiz-or-exam-online-on-computer-screen-vector-illustration-flat-cartoon-laptop-with.jpg?s=2048x2048&w=is&k=20&c=ajY3h_KOwXNX3dlY1UKBmsiRsej5qZGbkI0xd7e0p74=",
             contentDescription = null,
         )
         Text("Welcome to Chat App", style = MaterialTheme.typography.headlineLarge)
     }
-//    LaunchedEffect(Unit){
-//        delay(2000)
-//        navigator?.push(LoginScreen())
-//    }
+    LaunchedEffect(Unit) {
+        delay(2000)
+        val user = Database.user
+        if (user == null)
+            navigator?.push(LoginScreen())
+        else
+            navigator?.push(ChatScreen(user))
+    }
 }
