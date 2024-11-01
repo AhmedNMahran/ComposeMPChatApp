@@ -44,7 +44,6 @@ kotlin {
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
-            //session 12
             implementation(libs.ktor.client.websockets)
             implementation(libs.ktor.client.auth)
             implementation(compose.components.resources)
@@ -55,7 +54,7 @@ kotlin {
             // ViewModel utilities for Compose
             implementation (libs.androidx.lifecycle.viewmodel)
             implementation(libs.coil.compose)
-            implementation(libs.coil.network.okhttp)
+            implementation(libs.coil.network.ktor)
 
             // data store
             implementation(libs.datastore)
@@ -69,7 +68,6 @@ kotlin {
             implementation(libs.ktor.client.darwin)
             api(libs.androidx.lifecycle.viewmodel)
         }
-
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
@@ -77,7 +75,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.ahmednmahran.ahlankmp"
+    namespace = "com.ahmednmahran.composempchat"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

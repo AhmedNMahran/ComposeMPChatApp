@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    namespace = "com.ahmednmahran.ahlankmp.android"
+    namespace = "com.ahmednmahran.com.ahmednmahran.composempchat.android"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.ahmednmahran.ahlankmp.android"
+        applicationId = "com.ahmednmahran.com.ahmednmahran.composempchat.android"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

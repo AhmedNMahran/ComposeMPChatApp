@@ -1,7 +1,7 @@
 [versions]
 activityCompose = "1.9.2"
 agp = "8.5.2"
-coilCompose = "3.0.0-rc01"
+coilCompose = "3.0.0-rc02"
 datastoreVersion = "1.1.1"
 kotlin = "2.0.21"
 compose = "1.7.3"
@@ -9,10 +9,11 @@ compose-plugin = "1.6.11"
 compose-material3 = "1.3.0"
 androidx-activityCompose = "1.9.2"
 androidxLifecycle = "2.8.6"
+ktorClientJava = "<ktor-version>"
 material = "1.7.1"
 ui = "1.7.1"
 uiToolingPreview = "1.7.1"
-ktor = "2.3.12"
+ktor = "3.0.0"
 coroutines = "1.9.0"
 voyager = "1.1.0-beta02"
 
@@ -25,7 +26,7 @@ androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecyc
 androidx-lifecycle-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidxLifecycle" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilCompose" }
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastoreVersion" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -37,6 +38,7 @@ compose-material3 = { module = "androidx.compose.material3:material3", version.r
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 # Navigation

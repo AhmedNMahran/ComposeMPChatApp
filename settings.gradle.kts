@@ -14,6 +14,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AhlanKMP"
+rootProject.name = "ComposeMPChat"
 include(":androidApp")
 include(":shared")
