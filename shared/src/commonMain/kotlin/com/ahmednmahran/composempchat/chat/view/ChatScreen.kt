@@ -64,79 +64,11 @@ fun ChatScreenContent(
 ) {
     val navigator = LocalNavigator.current
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Display alert message if any
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(connections) {
-                AsyncImage(
-                    modifier = Modifier.size(48.dp).clip(CircleShape)
-                        .clickable {
-                            navigator?.push(DirectChatScreen(user, it))
-                        },
-
-                    model = it.profileImageUrl, contentDescription = "connection profile image"
-                )
-            }
-        }
-        Button(onClick = {
-            navigator?.push(ConnectionsPage(connections))
-        }) {
-            Text(text = "Direct Chats")
-        }
-
-        // Display the current user
-        Text(text = "User: ${user.username}")
-
-        // Display chat messages
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(chatMessages.size) { index ->
-                val message = chatMessages[index]
-                ChatItem(message, user, user)
-            }
-        }
-
-        // Text input for sending new messages
-        var message by remember { mutableStateOf("") }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            TextField(
-                value = message,
-                onValueChange = { message = it },
-                modifier = Modifier.weight(1f)
-            )
-            Button(onClick = {
-                onSendMessage(message)
-                message = "" // Clear the message after sending
-            }) {
-                Text(text = "Send")
-            }
-        }
-    }
+    // TODO: create the content that has lzaycolumn of ChatItems and text fields with send button
 
 }
 
 @Composable
 fun ChatItem(message: ChatMessage, sender: User, currentUser: User) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = if (message.sender == currentUser.username) Arrangement.End else Arrangement.Start
-    ) {
-        if (message.sender == currentUser.username)
-            Spacer(modifier = Modifier.weight(1f))
-        AsyncImage(
-            model = sender.profileImageUrl,
-            contentDescription = null,
-            modifier = Modifier.size(48.dp).clip(CircleShape)
-        )
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = message.sender,
-                modifier = Modifier.wrapContentWidth(),
-                style = MaterialTheme.typography.labelMedium
-            )
-            Text(text = message.body, modifier = Modifier.wrapContentSize())
-        }
-        if (message.sender != currentUser.username)
-            Spacer(modifier = Modifier.weight(1f))
-    }
-//    DataStoreFactory.
+    // TODO: create the chat item for every message
 }

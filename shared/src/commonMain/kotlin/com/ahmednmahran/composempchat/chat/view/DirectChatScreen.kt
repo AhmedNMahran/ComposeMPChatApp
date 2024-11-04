@@ -47,35 +47,6 @@ fun DirectChatScreenContent(
     onSendMessage: (String) -> Unit
 ) {
 
-    Column(modifier = Modifier.fillMaxSize()) {
-
-
-        // Display the current user
-        Text(text = "you are currently chatting with ${toUser.username}")
-
-        // Display chat messages
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(chatMessages.size) { index ->
-                val message = chatMessages[index]
-                ChatItem(message, if(user.username == message.sender) user else toUser, user)
-            }
-        }
-
-        // Text input for sending new messages
-        var message by remember { mutableStateOf("") }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            TextField(
-                value = message,
-                onValueChange = { message = it },
-                modifier = Modifier.weight(1f)
-            )
-            Button(onClick = {
-                onSendMessage(message)
-                message = "" // Clear the message after sending
-            }) {
-                Text(text = "Send")
-            }
-        }
-    }
+// TODO: create the direct chat content
 
 }
